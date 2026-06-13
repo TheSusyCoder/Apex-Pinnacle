@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cognitive & Somatic Architecture | Integrated Dashboard</title>
+    
+    <!-- Premium Typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg-color: #030303;
+            --card-bg: #0a0a0a;
+            --text-color: #f5f5f7;
+            --muted-text: #86868b;
+            --accent-glow: rgba(255, 255, 255, 0.08);
+            --border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            line-height: 1.6;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        h1, h2, h3, h4 {
+            font-family: 'Playfair Display', serif;
+            font-weight: 400;
+            letter-spacing: -0.01em;
+        }
+
+        /* Ambient Fade On Scroll */
+        .fade-element {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 1s cubic-bezier(0.22, 1, 0.36, 1), transform 1s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        .fade-element.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .container {
+            max-width: 1250px;
+            margin: 0 auto;
+            padding: 0 2.5rem;
+        }
+
+        /* Hero / Gateway */
+        .hero {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: flex-start;
+            position: relative;
+            border-bottom: 1px solid var(--border-color);
+            background: radial-gradient(circle at 80% 20%, rgba(255,255,255,0.02) 0%, transparent 50%);
+        }
+
+        .hero h1 {
+            font-size: clamp(3.5rem, 8vw, 6.5rem);
+            line-height: 1.1;
+            margin-bottom: 2rem;
+        }
+
+        .hero p {
+            font-size: clamp(1.1rem, 2vw, 1.4rem);
+            color: var(--muted-text);
+            max-width: 700px;
+            font-weight: 300;
+        }
+
+        .scroll-indicator {
+            position: absolute;
+            bottom: 3rem;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.3em;
+            color: var(--muted-text);
+        }
+
+        /* Protocol Grid Workspace */
+        .protocols {
+            padding: 10rem 0 5rem 0;
+        }
+
+        .section-intro {
+            margin-bottom: 6rem;
+            max-width: 600px;
+            border-left: 2px solid var(--border-color);
+            padding-left: 1.5rem;
+        }
+
+        .section-intro h2 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .section-intro p {
+            color: var(--muted-text);
+            font-size: 1.1rem;
+        }
+
+        .protocol-card {
+            display: grid;
+            grid-template-columns: 1.2fr 1fr;
+            gap: 6rem;
+            align-items: center;
+            margin-bottom: 12rem;
+        }
+
+        .protocol-card:nth-child(even) {
+            grid-template-columns: 1fr 1.2fr;
+        }
+
+        .protocol-card:nth-child(even) .protocol-content {
+            order: 2;
+        }
+
+        .protocol-card:nth-child(even) .protocol-visual {
+            order: 1;
+        }
+
+        .protocol-meta {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.25em;
+            color: var(--muted-text);
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        .protocol-content h3 {
+            font-size: 2.75rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .protocol-content p {
+            color: var(--muted-text);
+            font-size: 1.1rem;
+            margin-bottom: 1.5rem;
+            font-weight: 300;
+        }
+
+        .protocol-content em {
+            display: block;
+            font-size: 1rem;
+            color: var(--text-color);
+            opacity: 0.8;
+            margin-top: 1rem;
+        }
+
+        /* Dynamic Tool Tags */
+        .tool-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            margin-top: 1.5rem;
+        }
+
+        .tag {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            padding: 0.4rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            color: var(--text-color);
+            font-weight: 500;
+        }
+
+        /* Abstract Premium Geometric Visuals */
+        .protocol-visual {
+            width: 100%;
+            height: 450px;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .visual-canvas {
+            position: relative;
+            width: 200px;
+            height: 200px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Visual: Flow / Deep Work Pulse */
+        .pulse-ring {
+            position: absolute;
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 50%;
+            animation: ripple 4s infinite linear;
+        }
+        .pulse-ring:nth-child(2) { animation-delay: 1.33s; }
+        .pulse-ring:nth-child(3) { animation-delay: 2.66s; }
+
+        @keyframes ripple {
+            0% { width: 40px; height: 40px; opacity: 1; }
+            100% { width: 240px; height: 240px; opacity: 0; }
+        }
+
+        /* Visual: The 1-Page Mirror Lattice */
+        .lattice-box {
+            width: 80px;
+            height: 110px;
+            border: 1px solid rgba(255,255,255,0.4);
+            position: absolute;
+            background: rgba(255,255,255,0.01);
+            transition: all 0.5s ease;
+        }
+        .lattice-box.left { transform: translateX(-30px) translateY(-10px); }
+        .lattice-box.right { 
+            transform: translateX(30px) translateY(10px); 
+            border-style: dashed;
+            background: rgba(255,255,255,0.03);
+        }
+
+        /* Visual: Chrono-Nap Sync */
+        .chrono-disc {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            border: 1px solid rgba(255,255,255,0.1);
+            position: relative;
+            background: conic-gradient(from 0deg, transparent 70%, rgba(255,255,255,0.4) 100%);
+            animation: rotate 8s linear infinite;
+        }
+        @keyframes rotate { 100% { transform: rotate(360deg); } }
+
+        /* Visual: Math Optimal Stopping */
+        .graph-line {
+            width: 180px;
+            height: 2px;
+            background: rgba(255,255,255,0.1);
+            position: relative;
+        }
+        .graph-line::before {
+            content: '';
+            position: absolute;
+            left: 37%;
+            top: -4px;
+            width: 10px;
+            height: 10px;
+            background: #fff;
+            border-radius: 50%;
+        }
+
+        /* Visual: Thermal Cube */
+        .thermal-cube {
+            width: 90px;
+            height: 90px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            transform: rotate(45deg);
+            background: linear-gradient(135deg, rgba(255,255,255,0.05) 0%, transparent 100%);
+            animation: float 6s ease-in-out infinite;
+        }
+        @keyframes float {
+            0%, 100% { transform: rotate(45deg) translateY(0); }
+            50% { transform: rotate(45deg) translateY(-10px); }
+        }
+
+        /* Visual: Hydro Vectors */
+        .hydro-line {
+            width: 2px;
+            height: 140px;
+            background: linear-gradient(to bottom, transparent, #fff, transparent);
+            position: absolute;
+            box-shadow: -30px 0 0 rgba(255,255,255,0.2), 30px 0 0 rgba(255,255,255,0.2);
+            animation: stream 2s infinite linear;
+        }
+        @keyframes stream {
+            0% { transform: translateY(-20px); }
+            100% { transform: translateY(20px); }
+        }
+
+        /* Visual: Somatic Anchor */
+        .somatic-node {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            border: 1px dashed rgba(255, 255, 255, 0.4);
+            animation: pulse-somatic 3s ease-in-out infinite;
+        }
+        @keyframes pulse-somatic {
+            0%, 100% { transform: scale(0.9); opacity: 0.4; }
+            50% { transform: scale(1.1); opacity: 1; }
+        }
+
+        /* Auxiliary Ecosystem Section (Bento Style) */
+        .ecosystem {
+            padding-bottom: 10rem;
+        }
+
+        .bento-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 2rem;
+        }
+
+        .bento-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            padding: 3rem;
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .bento-card h4 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .bento-card p {
+            color: var(--muted-text);
+            font-weight: 300;
+            font-size: 1rem;
+            line-height: 1.5;
+        }
+
+        footer {
+            padding: 5rem 2.5rem;
+            border-top: 1px solid var(--border-color);
+            color: var(--muted-text);
+            font-size: 0.85rem;
+        }
+
+        .footer-wrap {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        @media (max-width: 992px) {
+            .protocol-card, .protocol-card:nth-child(even) {
+                grid-template-columns: 1fr;
+                gap: 3rem;
+            }
+            .protocol-card:nth-child(even) .protocol-content { order: 1; }
+            .protocol-card:nth-child(even) .protocol-visual { order: 2; }
+            .bento-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Hero / Gateway -->
+    <main class="container">
+        <section class="hero">
+            <div class="fade-element">
+                <h1>Integrated Architecture.</h1>
+                <p>A unified infrastructure merging high-end cognitive execution systems with clinical somatic reset protocols to manage both high-output flow and instantaneous nervous system regulation.</p>
+            </div>
+            <div class="scroll-indicator fade-element">System Unified // Scroll</div>
+        </section>
+
+        <!-- MODULE 1: COGNITIVE EXECUTION -->
+        <section class="protocols">
+            <div class="section-intro fade-element">
+                <h2>I. Cognitive Execution</h2>
+                <p>Systems built to override executive dysfunction, capture complex intellectual dependencies, and automate high-intensity deep work blocks.</p>
+            </div>
+
+            <!-- Protocol 01 -->
+            <div class="protocol-card fade-element">
+                <div class="protocol-content">
+                    <span class="protocol-meta">Protocol 01 // Deep Focus</span>
+                    <h3>Deep Flow States</h3>
+                    <p>Friction doesn't surrender to willpower; it yields to pre-engineered systems. By anchoring structured deep work blocks into atomic daily habits, systemic momentum becomes programmatic, protecting the mind from cognitive fragmentation.</p>
+                    <div class="tool-tags">
+                        <span class="tag">Atomic Habits Framework</span>
+                        <span class="tag">Deep Work Rooms</span>
+                        <span class="tag">Flow State Triggering</span>
+                    </div>
+                </div>
+                <div class="protocol-visual">
+                    <div class="visual-canvas">
+                        <div class="pulse-ring"></div>
+                        <div class="pulse-ring"></div>
+                        <div class="pulse-ring"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Protocol 02 -->
+            <div class="protocol-card fade-element">
+                <div class="protocol-content">
+                    <span class="protocol-meta">Protocol 02 // Neural Encoding</span>
+                    <h3>The Dual-Page Lattice</h3>
+                    <p>Passive review produces a dangerous cognitive illusion of competence. True systemic ingestion requires active recall: extract and document vital points onto a single page, close the source completely, and rewrite the underlying architecture on an adjacent page entirely from memory.</p>
+                    <div class="tool-tags">
+                        <span class="tag">Active Recall Mechanics</span>
+                        <span class="tag">1-Page Compression</span>
+                        <span class="tag">Flashcard Structuring</span>
+                    </div>
+                </div>
+                <div class="protocol-visual">
+                    <div class="visual-canvas">
+                        <div class="lattice-box left"></div>
+                        <div class="lattice-box right"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Protocol 03 -->
+            <div class="protocol-card fade-element">
+                <div class="protocol-content">
+                    <span class="protocol-meta">Protocol 03 // Neurochemical Hack</span>
+                    <h3>Adenosine Cleansing</h3>
+                    <p>Optimize chemical recovery using the classic coffee nap protocol. Consume target caffeine dosages immediately before entering a strict 20-minute power nap state. Sleep clears accumulating adenosine vectors, leaving systemic receptors vacant exactly as the caffeine reaches plasma clearance latency.</p>
+                    <div class="tool-tags">
+                        <span class="tag">Coffee + Power Nap Method</span>
+                        <span class="tag">Adenosine Clearance</span>
+                        <span class="tag">Sustained Alertness</span>
+                    </div>
+                </div>
+                <div class="protocol-visual">
+                    <div class="visual-canvas">
+                        <div class="chrono-disc"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Protocol 04 -->
+            <div class="protocol-card fade-element">
+                <div class="protocol-content">
+                    <span class="protocol-meta">Protocol 04 // Optimal Decisions</span>
+                    <h3>The 37% Stopping Axiom</h3>
+                    <p>In complex resource optimization and strategic choices, determine the transition window from exploration to absolute execution via optimal stopping theory. Evaluate the initial data baseline utilizing the mathematical boundary of $1/e \approx 37\%$, then immediately lock into the next appearing option that surpasses that established baseline.</p>
+                    <div class="tool-tags">
+                        <span class="tag">The 37% Rule</span>
+                        <span class="tag">Mathematical Stopping</span>
+                        <span class="tag">Systemic Selection</span>
+                    </div>
+                </div>
+                <div class="protocol-visual">
+                    <div class="visual-canvas">
+                        <div class="graph-line"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- MODULE 2: SOMATIC REGULATION -->
+        <section class="protocols" style="padding-top: 0;">
+            <div class="section-intro fade-element">
+                <h2>II. Somatic Regulation</h2>
+                <p>Nervous system override techniques derived from "Better Every Time.html". Designed to handle autonomic spikes and ground awareness instantly into the present moment.</p>
+            </div>
+
+            <!-- Protocol 05 -->
+            <div class="protocol-card fade-element">
+                <div class="protocol-content">
+                    <span class="protocol-meta">Protocol 05 // Sensory Shock</span>
+                    <h3>Thermal Shock</h3>
+                    <p>When cognitive processing enters hyper-drive or anxiety spikes, the brain gets trapped in subjective future loops. Forcing intense, acute physical input shifts attention away from internal panic and commands real-time processing of cold parameters.</p>
+                    <em>Application: Hold an ice cube firmly in your hand until it fully dissolves, or trace it across tactile zones like your wrists or the back of your neck. Focus completely on the thermal transition.</em>
+                    <div class="tool-tags">
+                        <span class="tag">The Ice Cube Method</span>
+                        <span class="tag">Tactile Grounding</span>
+                        <span class="tag">Afferent Shift</span>
+                    </div>
+                </div>
+                <div class="protocol-visual">
+                    <div class="visual-canvas">
+                        <div class="thermal-cube"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Protocol 06 -->
+            <div class="protocol-card fade-element">
+                <div class="protocol-content">
+                    <span class="protocol-meta">Protocol 06 // Autonomic Override</span>
+                    <h3>Hydro Reset</h3>
+                    <p>Sudden contact with low-temperature fluid rapidly triggers the mammalian dive reflex. This physiological response drops your heart rate instantly, shunts blood flow to vital systems, and acts as an immediate physical hard-reset sequence for an over-stimulated sympathetic nervous system.</p>
+                    <em>Application: Enter a cold shower environment for 30 to 60 seconds, or fully submerge/splash your face with freezing water. Regulate breathing pacing deliberately through the initial shock vectors.</em>
+                    <div class="tool-tags">
+                        <span class="tag">The Shower Mentor</span>
+                        <span class="tag">Mammalian Dive Reflex</span>
+                        <span class="tag">Vagal Stimulation</span>
+                    </div>
+                </div>
+                <div class="protocol-visual">
+                    <div class="visual-canvas">
+                        <div class="hydro-line"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Protocol 07 -->
+            <div class="protocol-card fade-element">
+                <div class="protocol-content">
+                    <span class="protocol-meta">Protocol 07 // Neuromuscular Anchor</span>
+                    <h3>Somatic Anchor</h3>
+                    <p>Anxiety loops depend on cognitive detachment from immediate physical reality. Inducing high-tonus muscular isolation followed by complete conscious relaxation provides a biological anchor, re-centering awareness in the present context.</p>
+                    <em>Application: Isolate and clench all kinetic muscle chains—fists, core, jaw, and legs—to max capacity for exactly 5 seconds. Expel breath in a sharp exhalation while dropping all muscular load at once. Repeat for 3 iterations.</em>
+                    <div class="tool-tags">
+                        <span class="tag">The Physical Method</span>
+                        <span class="tag">Somatic Anchoring</span>
+                        <span class="tag">Tension Release Cycles</span>
+                    </div>
+                </div>
+                <div class="protocol-visual">
+                    <div class="visual-canvas">
+                        <div class="somatic-node"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- MODULE 3: AUXILIARY KNOWLEDGE ECOSYSTEM -->
+        <section class="ecosystem fade-element">
+            <div class="section-intro" style="margin-bottom: 4rem;">
+                <h2>III. Knowledge Core</h2>
+                <p>The backend tools and contextual repositories supporting continuous cognitive optimization.</p>
+            </div>
+            <div class="bento-grid">
+                <div class="bento-card">
+                    <h4>AI Synthesis Core</h4>
+                    <p>Deploy custom utilities like Google NotebookLM to synthesize disconnected technical assets into structured, highly cross-referenced semantic layers.</p>
+                </div>
+                <div class="bento-card">
+                    <h4>Mentour Advice</h4>
+                    <p>Filter macro guidance from proven architectural mentors. Strip distracting rhetorical filler out, leaving clean, tactical insight blocks optimized for daily application.</p>
+                </div>
+                <div class="bento-card">
+                    <h4>External Nodes</h4>
+                    <p>Maintain decentralized resource lists, hyper-specific documentation pipelines, and additional deep-dive repositories to fuel adaptive learning curves.</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container footer-wrap">
+            <p>© 2026 Integrated Architecture Core. All processes fully optimized.</p>
+            <p>Designed for Hyper-Performance</p>
+        </div>
+    </footer>
+
+    <!-- Interactive Animation Driver -->
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const fadeElements = document.querySelectorAll('.fade-element');
+
+            setTimeout(() => {
+                document.querySelector('.hero .fade-element').classList.add('visible');
+                document.querySelector('.scroll-indicator').classList.add('visible');
+            }, 150);
+
+            const observerOptions = {
+                root: null,
+                rootMargin: '0px',
+                threshold: 0.1
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, observerOptions);
+
+            fadeElements.forEach(el => {
+                if (!el.classList.contains('visible')) {
+                    observer.observe(el);
+                }
+            });
+        });
+    </script>
+</body>
+</html>

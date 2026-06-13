@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily System | Execution</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg-color: #030303;
+            --text-color: #ffffff;
+            --muted-text: #888888;
+            --subtle-line: rgba(255, 255, 255, 0.08);
+            --glass-bg: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --glass-hover: rgba(255, 255, 255, 0.12);
+            --accent: #ffffff;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+        }
+
+        h1, h2, h3 {
+            font-family: 'Playfair Display', serif;
+            font-weight: 400;
+        }
+
+        /* --- Animations --- */
+        @keyframes initFade {
+            0% { opacity: 0; transform: translateY(15px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        .load-fade {
+            opacity: 0;
+            animation: initFade 1s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+        }
+
+        .delay-1 { animation-delay: 0.1s; }
+        .delay-2 { animation-delay: 0.2s; }
+        .delay-3 { animation-delay: 0.3s; }
+
+        .scroll-fade {
+            opacity: 0;
+            transform: translateY(25px);
+            transition: opacity 0.8s cubic-bezier(0.25, 1, 0.5, 1), transform 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+
+        .scroll-fade.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        /* --- Hero Section & Dynamic Tracking --- */
+        .hero {
+            padding: 6rem 0 3rem 0;
+            border-bottom: 1px solid var(--subtle-line);
+        }
+
+        .hero h1 {
+            font-size: clamp(2.5rem, 6vw, 4.5rem);
+            line-height: 1.1;
+            margin-bottom: 3rem;
+        }
+
+        .hero h1 em {
+            font-style: italic;
+            color: var(--muted-text);
+        }
+
+        /* Live Tracking Dashboard */
+        .live-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin-bottom: 3rem;
+        }
+
+        .stat-box {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            padding: 1.5rem;
+            border-radius: 4px;
+        }
+
+        .stat-box .label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--muted-text);
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-box h3 {
+            font-size: 1.75rem;
+            font-family: 'Inter', sans-serif;
+            font-weight: 300;
+        }
+
+        /* Daily Progress Bar */
+        .progress-container {
+            width: 100%;
+            height: 4px;
+            background: var(--glass-border);
+            border-radius: 2px;
+            margin-top: 1rem;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            width: 0%;
+            background: var(--accent);
+            transition: width 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+
+        /* --- Target Subject Goals --- */
+        .allocation-label {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--muted-text);
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        .quota-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .quota-card {
+            background: #000000;
+            border: 1px solid #1c2326;
+            padding: 1.5rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            border-radius: 2px;
+        }
+
+        .quota-card.wide { grid-column: span 2; }
+
+        .quota-card:hover {
+            border-color: #ffffff;
+            background: #080808;
+            box-shadow: 0 4px 20px rgba(255, 255, 255, 0.05);
+        }
+
+        .quota-card.secured {
+            background: rgba(255, 255, 255, 0.02);
+            border-color: rgba(255, 255, 255, 0.05);
+            color: var(--muted-text);
+            text-decoration: line-through;
+        }
+
+        .quota-card h4 {
+            font-size: 1rem;
+            font-weight: 400;
+            letter-spacing: 0.02em;
+        }
+
+        /* --- Timeline Workspace --- */
+        .timeline {
+            padding: 5rem 0 2rem 0;
+        }
+
+        .timeline-list {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .time-row {
+            display: grid;
+            grid-template-columns: 140px 1fr;
+            gap: 2rem;
+            padding: 2rem 0;
+            border-bottom: 1px solid var(--subtle-line);
+            align-items: baseline;
+            cursor: pointer;
+            position: relative;
+            transition: background 0.4s ease, border-color 0.4s ease;
+        }
+
+        .time-row::after {
+            content: '';
+            position: absolute;
+            bottom: -1px; left: 0; width: 0; height: 1px;
+            background-color: var(--text-color);
+            transition: width 0.5s ease;
+        }
+
+        .time-row:hover::after { width: 100%; }
+
+        .row-time {
+            font-size: 0.95rem;
+            color: var(--muted-text);
+            font-variant-numeric: tabular-nums;
+        }
+
+        .row-meta h2 {
+            font-size: 1.4rem;
+            margin-bottom: 0.4rem;
+            transition: color 0.4s ease;
+        }
+
+        .row-meta p {
+            color: #a0a0a0;
+            font-size: 0.95rem;
+            max-width: 600px;
+            transition: color 0.4s ease;
+        }
+
+        /* Rest Block Indicator */
+        .priority-rest {
+            border-left: 2px solid rgba(255,255,255,0.3);
+            padding-left: 1.5rem;
+            margin-left: -1.5rem;
+        }
+
+        /* Strikethrough Logic */
+        .time-row.realized { border-bottom-color: transparent; }
+        .time-row.realized .row-meta h2 { text-decoration: line-through; color: #444; }
+        .time-row.realized .row-meta p { color: #333; }
+        .time-row.realized .row-time { color: #333; }
+
+        /* --- System Message Box --- */
+        .system-message {
+            background: #050505;
+            border: 1px solid #1c2326;
+            padding: 2rem;
+            border-radius: 6px;
+            margin: 2rem auto 6rem auto;
+            color: #a0a0a0;
+            font-size: 0.95rem;
+            line-height: 1.7;
+        }
+
+        .system-message strong {
+            color: #ffffff;
+            font-weight: 600;
+        }
+
+        @media (max-width: 768px) {
+            .live-stats { grid-template-columns: 1fr; }
+            .quota-grid { grid-template-columns: 1fr; }
+            .quota-card.wide { grid-column: span 1; }
+            .time-row { grid-template-columns: 1fr; gap: 0.5rem; padding: 1.5rem 0; }
+            .priority-rest { padding-left: 1rem; margin-left: -1rem; }
+            .system-message { padding: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <section class="hero container">
+        <div class="load-fade delay-1">
+            <h1>Daily System<br><em>Execution.</em></h1>
+        </div>
+        
+        <div class="live-stats load-fade delay-2">
+            <div class="stat-box">
+                <span class="label">Independent Study Completed</span>
+                <h3 id="study-tracker">0h 0m</h3>
+                <div class="progress-container">
+                    <div class="progress-bar" id="study-progress"></div>
+                </div>
+            </div>
+            <div class="stat-box">
+                <span class="label">Breaks & Recovery Taken</span>
+                <h3 id="break-tracker">0h 0m</h3>
+                <div class="progress-container">
+                    <div class="progress-bar" id="break-progress"></div>
+                </div>
+            </div>
+            <div class="stat-box">
+                <span class="label">System Completion</span>
+                <h3 id="total-completion">0%</h3>
+                <div class="progress-container">
+                    <div class="progress-bar" id="total-progress"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="allocation-section load-fade delay-3">
+            <span class="allocation-label">Daily Assignment Goals</span>
+            <div class="quota-grid">
+                <div class="quota-card" onclick="toggleQuota(this)">
+                    <h4>Maths-1 Hr</h4>
+                </div>
+                <div class="quota-card" onclick="toggleQuota(this)">
+                    <h4>Science-1 Hr</h4>
+                </div>
+                <div class="quota-card" onclick="toggleQuota(this)">
+                    <h4>SST-30 Min's</h4>
+                </div>
+                <div class="quota-card" onclick="toggleQuota(this)">
+                    <h4>Selective subject 30 Min's</h4>
+                </div>
+                <div class="quota-card wide" onclick="toggleQuota(this)">
+                    <h4>2-End Language 15 Min's</h4>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="timeline container">
+        <span class="allocation-label scroll-fade">Timeline (Click block to complete & update stats)</span>
+        <div class="timeline-list">
+
+            <div class="time-row scroll-fade" data-type="study" data-duration="135" onclick="toggleRow(this)">
+                <div class="row-time">04:00 – 06:15 AM</div>
+                <div class="row-meta">
+                    <h2>Morning Study Block</h2>
+                    <p><strong>[2 hours 15 mins]</strong> Handle the hardest tasks first. Complete your Science, Maths, and 2-End Language here while your mind is fresh.</p>
+                </div>
+            </div>
+
+            <div class="time-row scroll-fade" data-type="routine" data-duration="65" onclick="toggleRow(this)">
+                <div class="row-time">06:15 – 07:20 AM</div>
+                <div class="row-meta">
+                    <h2>Morning Routine & Commute</h2>
+                    <p>Get ready for the day. Eat a proper breakfast, pack your bag, and travel to school.</p>
+                </div>
+            </div>
+
+            <div class="time-row scroll-fade" data-type="routine" data-duration="520" onclick="toggleRow(this)">
+                <div class="row-time">07:20 – 04:00 PM</div>
+                <div class="row-meta">
+                    <h2>School Day</h2>
+                    <p>Focus on learning directly from your teachers so you don't waste time re-learning material later.</p>
+                </div>
+            </div>
+
+            <div class="time-row priority-rest scroll-fade" data-type="break" data-duration="45" onclick="toggleRow(this)">
+                <div class="row-time">04:00 – 04:45 PM</div>
+                <div class="row-meta">
+                    <h2>Post-School Break</h2>
+                    <p><strong>[45 mins]</strong> Relax. Eat a snack, step away from books, and stretch before the evening begins.</p>
+                </div>
+            </div>
+
+            <div class="time-row scroll-fade" data-type="study" data-duration="60" onclick="toggleRow(this)">
+                <div class="row-time">04:45 – 05:45 PM</div>
+                <div class="row-meta">
+                    <h2>Evening Study Block</h2>
+                    <p><strong>[1 hour]</strong> Complete SST and your Selective subject. Your assignments for the day are now 100% done.</p>
+                </div>
+            </div>
+
+            <div class="time-row scroll-fade" data-type="study" data-duration="145" onclick="toggleRow(this)">
+                <div class="row-time">05:45 – 08:10 PM</div>
+                <div class="row-meta">
+                    <h2>Tuition Classes</h2>
+                    <p><strong>[2 hours 25 mins]</strong> Attend your classes. Use this time to strengthen what you learned at school.</p>
+                </div>
+            </div>
+
+            <div class="time-row priority-rest scroll-fade" data-type="break" data-duration="30" onclick="toggleRow(this)">
+                <div class="row-time">08:10 – 08:40 PM</div>
+                <div class="row-meta">
+                    <h2>Wind Down & Prep</h2>
+                    <p><strong>[30 mins]</strong> No studying allowed. Eat dinner, set out clothes for 4:00 AM, and let your brain relax.</p>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <div class="container scroll-fade">
+        <div class="system-message">
+            <p><strong>Systems build success.</strong> Every completed block is a vote for the student you are becoming. The math works perfectly—you have enough time to finish your work, attend classes, and get exactly 7 hours of rest. Trust the system, stick to the timings, and you will secure your 10th-grade goals without burning out.</p>
+        </div>
+    </div>
+
+    <script>
+        const TARGET_STUDY = 135 + 60 + 145; 
+        const TARGET_BREAK = 45 + 30; 
+        const TOTAL_ROWS = 7;
+
+        document.addEventListener("DOMContentLoaded", () => {
+            const observer = new IntersectionObserver((entries, obs) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                        obs.unobserve(entry.target);
+                    }
+                });
+            }, { 
+                threshold: 0.15,
+                rootMargin: "0px 0px -50px 0px"
+            });
+
+            document.querySelectorAll('.scroll-fade').forEach(el => observer.observe(el));
+        });
+
+        function toggleRow(row) {
+            row.classList.toggle('realized');
+            calculateLiveStats();
+        }
+
+        function toggleQuota(card) {
+            card.classList.toggle('secured');
+        }
+
+        function calculateLiveStats() {
+            let currentStudy = 0;
+            let currentBreak = 0;
+            let completedRows = document.querySelectorAll('.time-row.realized').length;
+
+            document.querySelectorAll('.time-row.realized').forEach(row => {
+                let type = row.getAttribute('data-type');
+                let duration = parseInt(row.getAttribute('data-duration'));
+                
+                if (type === 'study') currentStudy += duration;
+                if (type === 'break') currentBreak += duration;
+            });
+
+            document.getElementById('study-tracker').innerText = formatTime(currentStudy);
+            document.getElementById('break-tracker').innerText = formatTime(currentBreak);
+            
+            let percentComplete = Math.round((completedRows / TOTAL_ROWS) * 100);
+            document.getElementById('total-completion').innerText = percentComplete + "%";
+
+            document.getElementById('study-progress').style.width = Math.min((currentStudy / TARGET_STUDY) * 100, 100) + "%";
+            document.getElementById('break-progress').style.width = Math.min((currentBreak / TARGET_BREAK) * 100, 100) + "%";
+            document.getElementById('total-progress').style.width = percentComplete + "%";
+        }
+
+        function formatTime(minutes) {
+            const h = Math.floor(minutes / 60);
+            const m = minutes % 60;
+            if (h > 0) return `${h}h ${m}m`;
+            return `${m}m`;
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Execution Engine | Hub</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg-dark: #050505;
+            --text-main: #FFFFFF;
+            --text-muted: #8E8E93;
+            --text-dim: #48484A;
+            /* Restored rich glassmorphism variables */
+            --glass-bg: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --glass-border-hover: rgba(255, 255, 255, 0.25);
+            --glass-hover-bg: rgba(255, 255, 255, 0.07);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden; 
+            overflow-y: auto; 
+            -webkit-font-smoothing: antialiased;
+            position: relative;
+            letter-spacing: -0.01em;
+        }
+
+        h1, h2, h3, .serif {
+            font-family: 'Playfair Display', serif;
+            font-weight: 400;
+        }
+
+        /* --- Ambient Monochrome Depth (Required to make glass visible) --- */
+        .blob-container {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100vh;
+            overflow: hidden;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        .blob {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(120px);
+            opacity: 0.6;
+            animation: drift 25s infinite alternate cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Faint white background glows to refract through the glass */
+        .blob-1 {
+            width: 600px; height: 600px;
+            background: rgba(255, 255, 255, 0.05);
+            top: -10%; left: -10%;
+        }
+
+        .blob-2 {
+            width: 500px; height: 500px;
+            background: rgba(255, 255, 255, 0.04);
+            bottom: -20%; right: -10%;
+            animation-duration: 22s;
+            animation-delay: -5s;
+        }
+
+        @keyframes drift {
+            0% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(3vw, 5vh) scale(1.05); }
+            66% { transform: translate(-3vw, 8vh) scale(0.95); }
+            100% { transform: translate(5vw, -5vh) scale(1); }
+        }
+
+        /* --- Restored Glassmorphic Header Strip --- */
+        nav {
+            position: fixed;
+            top: 0; left: 0; width: 100%;
+            padding: 1.5rem 2.5rem; 
+            background: rgba(10, 10, 10, 0.4);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--glass-border);
+            z-index: 100;
+        }
+
+        /* --- Hero Section --- */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 8rem 2rem 4rem 2rem;
+            z-index: 10;
+            position: relative;
+        }
+
+        .badge {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.25em;
+            color: var(--text-main);
+            font-weight: 500;
+            padding: 0.5rem 1.2rem;
+            border: 1px solid var(--glass-border);
+            border-radius: 100px;
+            margin-bottom: 2.5rem;
+            background: var(--glass-bg);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+        }
+
+        .hero h1 {
+            font-size: clamp(3.5rem, 7vw, 6rem);
+            line-height: 1.05;
+            letter-spacing: -0.04em;
+            margin-bottom: 2rem;
+            color: var(--text-main);
+        }
+
+        .hero h1 em {
+            font-style: italic;
+            color: var(--text-muted);
+            font-weight: 400;
+        }
+
+        .hero p {
+            font-size: clamp(1rem, 1.5vw, 1.15rem);
+            color: var(--text-muted);
+            max-width: 580px;
+            margin-bottom: 4rem;
+            line-height: 1.65;
+            font-weight: 300;
+        }
+
+        /* --- Enhanced Interactive Buttons --- */
+        .btn-group {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.9rem 2.2rem;
+            font-size: 0.85rem;
+            font-weight: 500;
+            text-decoration: none;
+            letter-spacing: 0.03em;
+            border-radius: 3px; 
+            /* Premium snappy animation curve restored */
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); 
+        }
+
+        .btn-primary {
+            background: var(--text-main);
+            color: var(--bg-dark);
+            border: 1px solid var(--text-main);
+        }
+
+        .btn-primary:hover {
+            background: transparent;
+            color: var(--text-main);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(255, 255, 255, 0.05);
+        }
+
+        .btn-secondary {
+            background: var(--glass-bg);
+            color: var(--text-main);
+            border: 1px solid var(--glass-border);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+
+        .btn-secondary:hover {
+            background: var(--glass-hover-bg);
+            border-color: var(--glass-border-hover);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
+        }
+
+        /* --- Core Directives with Glassmorphism & Lift Animations --- */
+        .system-aims {
+            padding: 4rem 2rem 12rem 2rem;
+            max-width: 1140px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 10;
+        }
+
+        .section-label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.3em;
+            color: var(--text-muted);
+            margin-bottom: 3.5rem;
+            display: block;
+            font-weight: 500;
+            position: relative;
+            padding-left: 1.5rem;
+        }
+
+        .section-label::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            width: 0.8rem;
+            height: 1px;
+            background: var(--text-dim);
+        }
+
+        .aims-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem; 
+        }
+
+        /* Restored glass cards */
+        .aim-card {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            padding: 3rem 2.5rem;
+            position: relative;
+            border-radius: 4px;
+            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        /* Better lift hover animation */
+        .aim-card:hover {
+            background: var(--glass-hover-bg);
+            border-color: var(--glass-border-hover);
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+        }
+
+        .aim-number {
+            position: absolute;
+            top: 2rem;
+            right: 2.5rem;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--text-dim);
+            letter-spacing: 0.05em;
+            transition: color 0.4s ease;
+        }
+
+        .aim-card:hover .aim-number {
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        .aim-card h3 {
+            font-size: 1.45rem;
+            color: var(--text-main);
+            margin-bottom: 1.5rem;
+            letter-spacing: -0.01em;
+        }
+
+        .aim-card p {
+            font-size: 0.9rem;
+            line-height: 1.7;
+            color: var(--text-muted);
+            font-weight: 300;
+        }
+
+        /* Smooth Cinematic Animations */
+        .fade-up {
+            opacity: 0;
+            transform: translateY(15px);
+            animation: fadeUpAnim 0.8s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+        }
+
+        .delay-1 { animation-delay: 0.15s; }
+        .delay-2 { animation-delay: 0.3s; }
+        .delay-3 { animation-delay: 0.45s; }
+        .delay-4 { animation-delay: 0.6s; }
+
+        @keyframes fadeUpAnim {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Responsive Layout Optimization */
+        @media (max-width: 768px) {
+            nav { padding: 1rem 1.5rem; }
+            .btn-group { flex-direction: column; width: 100%; max-width: 320px; gap: 0.75rem; }
+            .btn { width: 100%; }
+            .aims-grid { grid-template-columns: 1fr; }
+            .aim-card { padding: 2.5rem 2rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="blob-container">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+    </div>
+
+    <nav></nav>
+
+    <main class="hero">
+        <div class="badge fade-up">Unified Workspace</div>
+        
+        <h1 class="fade-up delay-1">Execution<br><em>Engine.</em></h1>
+        
+        <p class="fade-up delay-2">
+            Centralized hub for time-blocking, cognitive optimization, and deep work processing. Select a protocol to initiate output.
+        </p>
+
+        <div class="btn-group fade-up delay-3">
+            <a href="Off-Days Timeblock.html" class="btn btn-secondary">Off-Days Protocol</a>
+            <a href="In-Day Timeblock.html" class="btn btn-secondary">In-Day Execution</a>
+            <a href="Better Every Time.html" class="btn btn-primary">Mental Frameworks</a>
+        </div>
+    </main>
+
+    <section class="system-aims fade-up delay-4">
+        <span class="section-label">Core Directives</span>
+        
+        <div class="aims-grid">
+            <div class="aim-card">
+                <span class="aim-number">// 01</span>
+                <h3 class="serif">Strategic Time Allocation</h3>
+                <p>Mastering the temporal dimension. The system enforces strict boundaries between deep work and recovery, ensuring maximum output during active phases while preventing cognitive burnout.</p>
+            </div>
+            
+            <div class="aim-card">
+                <span class="aim-number">// 02</span>
+                <h3 class="serif">Cognitive Optimization</h3>
+                <p>Mental bandwidth is a finite resource. By offloading routine decision-making to structured protocols, the engine preserves maximum neurological capacity for complex problem-solving.</p>
+            </div>
+            
+            <div class="aim-card">
+                <span class="aim-number">// 03</span>
+                <h3 class="serif">Deep Work Execution</h3>
+                <p>Distraction is systematically eliminated. The framework fosters an environment of radical focus, allowing for rapid entry into flow states and the execution of high-leverage tasks.</p>
+            </div>
+        </div>
+    </section>
+
+</body>
+</html>

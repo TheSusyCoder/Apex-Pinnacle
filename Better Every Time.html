@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grounded | Snap Back to Reality</title>
+    
+    <!-- Importing Premium Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+
+    <style>
+        /* CSS Reset & Base Variables */
+        :root {
+            --bg-color: #050505;
+            --text-color: #ffffff;
+            --muted-text: #888888;
+            --accent-border: rgba(255, 255, 255, 0.15);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        h1, h2, h3 {
+            font-family: 'Playfair Display', serif;
+            font-weight: 400;
+        }
+
+        /* Ambient Fade Animation Classes */
+        .fade-element {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: opacity 1.2s cubic-bezier(0.25, 1, 0.5, 1), transform 1.2s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+
+        .fade-element.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Layout & Sections */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        /* Hero Section */
+        .hero {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            border-bottom: 1px solid var(--accent-border);
+        }
+
+        .hero h1 {
+            font-size: clamp(3rem, 8vw, 6rem);
+            letter-spacing: -0.02em;
+            margin-bottom: 1rem;
+        }
+
+        .hero p {
+            font-size: clamp(1rem, 2vw, 1.25rem);
+            color: var(--muted-text);
+            max-width: 600px;
+            font-weight: 300;
+        }
+
+        .scroll-indicator {
+            position: absolute;
+            bottom: 3rem;
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            color: var(--muted-text);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; }
+        }
+
+        /* Methods Section */
+        .methods {
+            padding: 8rem 0;
+        }
+
+        .method-card {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+            margin-bottom: 8rem;
+        }
+
+        .method-card:nth-child(even) {
+            grid-template-columns: 1fr 1fr;
+            direction: rtl; /* Reverses the layout for visual interest */
+        }
+
+        .method-card:nth-child(even) > * {
+            direction: ltr; /* Keeps text reading normally */
+        }
+
+        .method-number {
+            font-family: 'Playfair Display', serif;
+            font-size: 8rem;
+            color: rgba(255, 255, 255, 0.05);
+            line-height: 1;
+            position: absolute;
+            top: -3rem;
+            left: -2rem;
+            z-index: -1;
+        }
+
+        .method-content {
+            position: relative;
+        }
+
+        .method-content h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid var(--text-color);
+            padding-bottom: 0.5rem;
+            display: inline-block;
+        }
+
+        .method-content p {
+            color: var(--muted-text);
+            font-size: 1.1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .method-visual {
+            width: 100%;
+            height: 400px;
+            background: linear-gradient(135deg, #111, #000);
+            border: 1px solid var(--accent-border);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .method-visual::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: radial-gradient(circle at center, transparent 0%, #050505 100%);
+        }
+
+        /* Abstract visual elements representing the methods */
+        .visual-ice {
+            width: 100px; height: 100px;
+            border: 2px solid #fff;
+            transform: rotate(45deg);
+        }
+        
+        .visual-water {
+            width: 2px; height: 150px;
+            background: #fff;
+            box-shadow: -20px 0 0 #fff, 20px 0 0 #fff;
+        }
+
+        .visual-physical {
+            width: 120px; height: 120px;
+            border-radius: 50%;
+            border: 2px dashed #fff;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 4rem 2rem;
+            border-top: 1px solid var(--accent-border);
+            color: var(--muted-text);
+            font-size: 0.9rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .method-card, .method-card:nth-child(even) {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+                direction: ltr;
+            }
+            .method-visual {
+                height: 250px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container fade-element">
+            <h1>Snap Back.</h1>
+            <p>When the mind drifts into overdrive, the body must take the wheel. Discover clinical, sensory-based techniques to instantly anchor yourself in the present moment.</p>
+        </div>
+        <div class="scroll-indicator fade-element">Scroll to begin</div>
+    </section>
+
+    <!-- Methods Section -->
+    <section class="methods container">
+        
+        <!-- Method 01: Ice Cube -->
+        <div class="method-card fade-element">
+            <div class="method-content">
+                <span class="method-number">01</span>
+                <h2>Thermal Shock</h2>
+                <p><strong>The Ice Cube Method.</strong> When anxiety spikes, your brain enters fight-or-flight mode. Holding a piece of ice shifts your brain's attention away from panic and forces it to process the intense physical sensation of cold.</p>
+                <p><em>Application:</em> Hold an ice cube in your hand until it melts, or rub it gently along your wrists or the back of your neck. Focus entirely on the temperature and texture.</p>
+            </div>
+            <div class="method-visual">
+                <div class="visual-ice"></div>
+            </div>
+        </div>
+
+        <!-- Method 02: Shower Reset -->
+        <div class="method-card fade-element">
+            <div class="method-content">
+                <span class="method-number">02</span>
+                <h2>Hydro Reset</h2>
+                <p><strong>The Shower Mentor.</strong> Also known as the mammalian dive reflex, sudden exposure to cold water lowers your heart rate and redirects blood flow, effectively acting as a hard reset button for your nervous system.</p>
+                <p><em>Application:</em> Step into a cold shower for 30 to 60 seconds, or splash freezing cold water directly onto your face. Breathe slowly and deeply through the shock.</p>
+            </div>
+            <div class="method-visual">
+                <div class="visual-water"></div>
+            </div>
+        </div>
+
+        <!-- Method 03: Physical Grounding -->
+        <div class="method-card fade-element">
+            <div class="method-content">
+                <span class="method-number">03</span>
+                <h2>Somatic Anchor</h2>
+                <p><strong>The Physical Method.</strong> Anxiety pulls you into the future or the past. Physical tension and release bring you violently back to the exact second you are standing in.</p>
+                <p><em>Application:</em> Clench every muscle in your body—your fists, jaw, legs, and core—as tightly as you can for 5 seconds. Exhale sharply and release everything all at once. Repeat three times.</p>
+            </div>
+            <div class="method-visual">
+                <div class="visual-physical"></div>
+            </div>
+        </div>
+
+    </section>
+
+    <footer>
+        <p>Designed for mental clarity. Breathe in, breathe out.</p>
+    </footer>
+
+    <!-- JavaScript for Ambient Fade on Scroll -->
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const fadeElements = document.querySelectorAll('.fade-element');
+
+            // Trigger the hero section immediately on load
+            setTimeout(() => {
+                document.querySelector('.hero .fade-element').classList.add('visible');
+                document.querySelector('.scroll-indicator').classList.add('visible');
+            }, 100);
+
+            // Intersection Observer for scrolling fade-ins
+            const observerOptions = {
+                root: null,
+                rootMargin: '0px',
+                threshold: 0.25 // Trigger when 25% of the element is visible
+            };
+
+            const observer = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                        // Optional: Unobserve after fading in if you don't want them to fade out when scrolling up
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, observerOptions);
+
+            // Observe all elements except the ones we already triggered
+            fadeElements.forEach(el => {
+                if (!el.classList.contains('visible')) {
+                    observer.observe(el);
+                }
+            });
+        });
+    </script>
+</body>
+</html>

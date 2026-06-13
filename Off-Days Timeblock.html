@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Protocol | 08.00 Hours</title>
+    
+    <!-- Premium Editorial Typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg-color: #000000;
+            --text-color: #ffffff;
+            --muted-text: #707070;
+            --subtle-line: rgba(255, 255, 255, 0.08);
+            --accent-glow: rgba(255, 255, 255, 0.4);
+            --glass-bg: rgba(255, 255, 255, 0.02);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'Inter', sans-serif;
+            line-height: 1.7;
+            letter-spacing: -0.01em;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        h1, h2, h3, .serif-font {
+            font-family: 'Playfair Display', serif;
+            font-weight: 400;
+        }
+
+        /* --- Ambient Animation Engine --- */
+        .fade-element {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 1.4s cubic-bezier(0.16, 1, 0.3, 1), transform 1.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .fade-element.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 2.5rem;
+        }
+
+        /* --- Hero Section & Tracking Integration --- */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+            border-bottom: 1px solid var(--subtle-line);
+            padding: 4rem 0;
+        }
+
+        .hero-meta {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.3em;
+            color: var(--muted-text);
+            margin-bottom: 1.5rem;
+        }
+
+        .hero h1 {
+            font-size: clamp(3.5rem, 9vw, 7.5rem);
+            line-height: 0.95;
+            letter-spacing: -0.04em;
+            margin-bottom: 2rem;
+        }
+
+        .hero h1 em {
+            font-style: italic;
+            font-weight: 400;
+            color: var(--muted-text);
+        }
+
+        /* Enhanced Hero Grid with Micro-Progress Tracking */
+        .hero-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+            margin-top: 2rem;
+            border-top: 1px solid var(--subtle-line);
+            padding-top: 2rem;
+        }
+
+        .stat-box h2 {
+            font-size: 2.2rem;
+            font-weight: 300;
+            font-family: 'Inter', sans-serif;
+            letter-spacing: -0.02em;
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-box p {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            color: var(--muted-text);
+        }
+
+        /* Minimalist Progress Indicators */
+        .progress-container {
+            width: 100%;
+            height: 2px;
+            background: rgba(255, 255, 255, 0.05);
+            margin-top: 0.75rem;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            width: 0%;
+            background: var(--text-color);
+            transition: width 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        /* --- Target Assignment Goals Matrix --- */
+        .allocation-section {
+            margin-top: 3.5rem;
+        }
+
+        .allocation-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            color: var(--muted-text);
+            margin-bottom: 1.2rem;
+            display: block;
+        }
+
+        .quota-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+        }
+
+        .quota-card {
+            background: transparent;
+            border: 1px solid var(--subtle-line);
+            padding: 1.2rem;
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+        }
+
+        .quota-card.wide { 
+            grid-column: span 2; 
+        }
+
+        .quota-card:hover {
+            border-color: var(--text-color);
+            background: var(--glass-bg);
+        }
+
+        .quota-card.secured {
+            border-color: rgba(255, 255, 255, 0.03);
+            background: transparent;
+        }
+
+        .quota-card h4 {
+            font-size: 0.85rem;
+            font-weight: 400;
+            letter-spacing: 0.02em;
+            transition: color 0.4s ease;
+        }
+
+        .quota-card.secured h4 {
+            color: rgba(255, 255, 255, 0.15);
+            text-decoration: line-through;
+        }
+
+        .scroll-indicator {
+            position: absolute;
+            bottom: 2rem;
+            left: 2.5rem;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.25em;
+            color: var(--muted-text);
+        }
+
+        /* --- Strategy / Quotes Section --- */
+        .frameworks {
+            padding: 10rem 0 6rem 0;
+            border-bottom: 1px solid var(--subtle-line);
+        }
+
+        .section-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.3em;
+            color: var(--muted-text);
+            margin-bottom: 3rem;
+            display: block;
+        }
+
+        .quote-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 4rem;
+        }
+
+        .quote-card h4 {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            margin-bottom: 1rem;
+            color: var(--text-color);
+        }
+
+        .quote-card p {
+            color: var(--muted-text);
+            font-size: 0.95rem;
+            font-style: italic;
+        }
+
+        /* --- Timeline Workspace --- */
+        .timeline {
+            padding: 8rem 0;
+        }
+
+        .timeline-list {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .time-row {
+            display: grid;
+            grid-template-columns: 100px 220px 1fr;
+            gap: 2rem;
+            padding: 2.5rem 0;
+            border-bottom: 1px solid var(--subtle-line);
+            align-items: baseline;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.5s ease;
+        }
+
+        .time-row::after {
+            content: '';
+            position: absolute;
+            bottom: -1px; left: 0; width: 0; height: 1px;
+            background-color: var(--text-color);
+            transition: width 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .time-row:hover::after {
+            width: 100%;
+        }
+
+        .row-index {
+            font-size: 0.8rem;
+            color: var(--muted-text);
+            font-family: monospace;
+        }
+
+        .row-time {
+            font-size: 1.1rem;
+            font-weight: 300;
+            letter-spacing: 0.05em;
+        }
+
+        .row-meta h2 {
+            font-size: 1.8rem;
+            margin-bottom: 0.75rem;
+            transition: color 0.4s ease;
+        }
+
+        .row-meta p {
+            color: var(--muted-text);
+            font-size: 0.95rem;
+            max-width: 650px;
+            transition: color 0.4s ease;
+        }
+
+        /* Interactive Realized State (Atomic Habits Loop) */
+        .time-row.realized {
+            border-bottom-color: rgba(255,255,255,0.03);
+        }
+
+        .time-row.realized .row-meta h2 {
+            text-decoration: line-through;
+            color: rgba(255, 255, 255, 0.15);
+        }
+
+        .time-row.realized .row-meta p {
+            color: rgba(255, 255, 255, 0.04);
+        }
+
+        .time-row.realized .row-time, 
+        .time-row.realized .row-index {
+            color: rgba(255, 255, 255, 0.08);
+        }
+
+        /* --- Footer --- */
+        footer {
+            padding: 6rem 0;
+            border-top: 1px solid var(--subtle-line);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.8rem;
+            color: var(--muted-text);
+            letter-spacing: 0.05em;
+        }
+
+        /* --- Responsive Viewports --- */
+        @media (max-width: 900px) {
+            .quote-grid { grid-template-columns: 1fr; gap: 2.5rem; }
+            .hero-grid { grid-template-columns: 1fr; gap: 1.5rem; }
+            .quota-grid { grid-template-columns: 1fr; }
+            .quota-card.wide { grid-column: span 1; }
+            .time-row { grid-template-columns: 50px 1fr; gap: 1rem; padding: 2rem 0; }
+            .row-time { grid-row: 1; grid-column: 2; font-size: 0.95rem; margin-bottom: 0.25rem;}
+            .row-meta { grid-column: 2; }
+            .scroll-indicator { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- HERO COMPONENT WITH ACTIVE LIVE ENGINE -->
+    <section class="hero container">
+        <div class="fade-element">
+            <div class="hero-meta">System Blueprint</div>
+            <h1>08.00<em> Hours</em><br>Pure Output.</h1>
+        </div>
+        
+        <!-- Live Trackers -->
+        <div class="hero-grid fade-element">
+            <div class="stat-box">
+                <h2 id="study-tracker">0h 0m</h2>
+                <p>Independent Study Completed</p>
+                <div class="progress-container">
+                    <div class="progress-bar" id="study-progress"></div>
+                </div>
+            </div>
+            <div class="stat-box">
+                <h2 id="break-tracker">0h 0m</h2>
+                <p>Breaks & Recovery Taken</p>
+                <div class="progress-container">
+                    <div class="progress-bar" id="break-progress"></div>
+                </div>
+            </div>
+            <div class="stat-box">
+                <h2 id="total-completion">0%</h2>
+                <p>System Completion Rate</p>
+                <div class="progress-container">
+                    <div class="progress-bar" id="total-progress"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Adaptive Quota Management Element -->
+        <div class="allocation-section fade-element">
+            <span class="allocation-label">Target Assignment Metrics</span>
+            <div class="quota-grid">
+                <div class="quota-card" onclick="toggleQuota(this)">
+                    <h4>Maths — 1 Hr</h4>
+                </div>
+                <div class="quota-card" onclick="toggleQuota(this)">
+                    <h4>Science — 1.5 Hr</h4>
+                </div>
+                <div class="quota-card" onclick="toggleQuota(this)">
+                    <h4>SST — 30 Mins</h4>
+                </div>
+                <div class="quota-card" onclick="toggleQuota(this)">
+                    <h4>Selective — 30 Mins</h4>
+                </div>
+                <div class="quota-card wide" onclick="toggleQuota(this)">
+                    <h4>2nd Language — 15 Mins</h4>
+                </div>
+            </div>
+        </div>
+
+        <div class="scroll-indicator fade-element">Shift down to engage</div>
+    </section>
+
+    <!-- ARCHITECTURAL PSYCHOLOGY COMPONENT -->
+    <section class="frameworks container">
+        <span class="section-label fade-element">System Foundations</span>
+        <div class="quote-grid fade-element">
+            <div class="quote-card">
+                <h4>Atomic Habits</h4>
+                <p>"You do not rise to the level of your goals. You fall to the level of your systems. Design an environment where friction is completely absent."</p>
+            </div>
+            <div class="quote-card">
+                <h4>Deep Work</h4>
+                <p>"High-Quality Work Produced = (Time Spent) x (Intensity of Focus). To produce at your peak level, you need to work for extended periods with zero distraction."</p>
+            </div>
+            <div class="quote-card">
+                <h4>The Flow State</h4>
+                <p>"Flow exists at the thin interface of deep personal challenge and absolute clarity of purpose. Action and awareness become completely unified."</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- THE PROTOCOL TIMELINE COMPONENT WITH PARAMETRIC DATA ATTRIBUTES -->
+    <section class="timeline container">
+        <span class="section-label fade-element">Daily Timeline Sequence</span>
+        <div class="timeline-list fade-element">
+
+            <!-- 01 -->
+            <div class="time-row" data-type="routine" data-duration="15" onclick="toggleRow(this)">
+                <div class="row-index">01</div>
+                <div class="row-time">05:00 — 05:15 AM</div>
+                <div class="row-meta">
+                    <h2>Morning Activation</h2>
+                    <p>Leverage baseline peak cortisol. Immediate systemic hydration. Zero screens or external inputs allowed to keep neural processing completely clean.</p>
+                </div>
+            </div>
+
+            <!-- 02 -->
+            <div class="time-row" data-type="study" data-duration="180" onclick="toggleRow(this)">
+                <div class="row-index">02</div>
+                <div class="row-time">05:15 — 08:15 AM</div>
+                <div class="row-meta">
+                    <h2>Deep Work Sprint I</h2>
+                    <p>A massive 3-hour uninterrupted block targeting high-priority core subjects. Maximize challenge while mental resources are entirely fresh.</p>
+                </div>
+            </div>
+
+            <!-- 03 -->
+            <div class="time-row" data-type="routine" data-duration="45" onclick="toggleRow(this)">
+                <div class="row-index">03</div>
+                <div class="row-time">08:15 — 09:00 AM</div>
+                <div class="row-meta">
+                    <h2>Thermal Reset & Fuel</h2>
+                    <p>Deliberate cold bath exposure to trigger a durable dopamine spike. Followed immediately by clean energetic nutrition to power the next loop.</p>
+                </div>
+            </div>
+
+            <!-- 04 -->
+            <div class="time-row" data-type="study" data-duration="180" onclick="toggleRow(this)">
+                <div class="row-index">04</div>
+                <div class="row-time">09:00 — 12:00 PM</div>
+                <div class="row-meta">
+                    <h2>Deep Work Sprint II</h2>
+                    <p>Second 3-hour execution window. Dive directly into heavy analytics, active recall problem-solving, or system architecture protocols.</p>
+                </div>
+            </div>
+
+            <!-- 05 -->
+            <div class="time-row" data-type="break" data-duration="60" onclick="toggleRow(this)">
+                <div class="row-index">05</div>
+                <div class="row-time">12:00 — 01:00 PM</div>
+                <div class="row-meta">
+                    <h2>Strategic Down-Regulation</h2>
+                    <p>Nutritional replenishment and intentional mental detachment. Let subconscious processing synthesize complex neural connections from morning sprints.</p>
+                </div>
+            </div>
+
+            <!-- 06 -->
+            <div class="time-row" data-type="study" data-duration="90" onclick="toggleRow(this)">
+                <div class="row-index">06</div>
+                <div class="row-time">01:00 — 02:30 PM</div>
+                <div class="row-meta">
+                    <h2>Operational Buffer</h2>
+                    <p>1.5 hours built exclusively for administrative homework assignments, workspace sorting, and clearing minor organizational friction.</p>
+                </div>
+            </div>
+
+            <!-- 07 -->
+            <div class="time-row" data-type="study" data-duration="120" onclick="toggleRow(this)">
+                <div class="row-index">07</div>
+                <div class="row-time">02:30 — 04:30 PM</div>
+                <div class="row-meta">
+                    <h2>Deep Work Sprint III</h2>
+                    <p>The final 2-hour push to lock in your absolute 8-hour daily target. Close out remaining analytical priorities with relentless focus.</p>
+                </div>
+            </div>
+
+            <!-- 08 -->
+            <div class="time-row" data-type="break" data-duration="120" onclick="toggleRow(this)">
+                <div class="row-index">08</div>
+                <div class="row-time">04:30 — 06:30 PM</div>
+                <div class="row-meta">
+                    <h2>Somatic Peak & Hobby</h2>
+                    <p>Biologically perfect window for intense anaerobic HIIT or hypoxic metrics. Followed seamlessly by creative coding or interface optimization.</p>
+                </div>
+            </div>
+
+            <!-- 09 -->
+            <div class="time-row" data-type="break" data-duration="75" onclick="toggleRow(this)">
+                <div class="row-index">09</div>
+                <div class="row-time">06:30 — 07:45 PM</div>
+                <div class="row-meta">
+                    <h2>Passive Recovery</h2>
+                    <p>Nutritional intake and structured relaxation. Transition neural pathways from high-stakes output into a resting baseline state.</p>
+                </div>
+            </div>
+
+            <!-- 10 -->
+            <div class="time-row" data-type="routine" data-duration="57" onclick="toggleRow(this)">
+                <div class="row-index">10</div>
+                <div class="row-time">07:45 — 08:42 PM</div>
+                <div class="row-meta">
+                    <h2>Environmental Prep</h2>
+                    <p>Audit performance metrics, calibrate constraints for tomorrow, and cut all emission screens by 08:15 PM to protect sleep architecture.</p>
+                </div>
+            </div>
+
+            <!-- 11 -->
+            <div class="time-row" data-type="routine" data-duration="518" onclick="toggleRow(this)">
+                <div class="row-index">11</div>
+                <div class="row-time">08:42 — 05:00 AM</div>
+                <div class="row-meta">
+                    <h2>Neurological Architecture</h2>
+                    <p>Exactly 8.6 hours of deep sleep. Supplemented with precision audio frequencies to drive rapid alpha-to-delta transition for optimal physical repair.</p>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="container">
+        <p>Execution over intention.</p>
+        <p>© 2026 DistributionX</p>
+    </footer>
+
+    <!-- SCROLL & INTERACTIVE LOGIC ENGINE -->
+    <script>
+        // Total parametric tracking configurations calibrated to the schedule parameters
+        const TARGET_STUDY = 180 + 180 + 90 + 120; // 570 mins total output
+        const TARGET_BREAK = 60 + 120 + 75;         // 255 mins total recovery
+        const TOTAL_ROWS = 11;
+
+        document.addEventListener("DOMContentLoaded", () => {
+            const fadeElements = document.querySelectorAll('.fade-element');
+
+            // Trigger hero layout fade elements on safe launch loop
+            setTimeout(() => {
+                if(fadeElements[0]) fadeElements[0].classList.add('visible');
+                if(fadeElements[1]) fadeElements[1].classList.add('visible');
+                if(fadeElements[2]) fadeElements[2].classList.add('visible');
+            }, 150);
+
+            // High-Performance Intersection Observer for Ambient Fade on Scroll
+            const observerOptions = {
+                root: null,
+                rootMargin: '0px',
+                threshold: 0.1
+            };
+
+            const observer = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                        observer.unobserve(entry.target); 
+                    }
+                });
+            }, observerOptions);
+
+            fadeElements.forEach(el => {
+                if (!el.classList.contains('visible')) {
+                    observer.observe(el);
+                }
+            });
+        });
+
+        // Toggle state and recalibrate metrics
+        function toggleRow(row) {
+            row.classList.toggle('realized');
+            calculateLiveStats();
+        }
+
+        function toggleQuota(card) {
+            card.classList.toggle('secured');
+        }
+
+        // Live Arithmetic Calculation Engine
+        function calculateLiveStats() {
+            let currentStudy = 0;
+            let currentBreak = 0;
+            let completedRows = document.querySelectorAll('.time-row.realized').length;
+
+            document.querySelectorAll('.time-row.realized').forEach(row => {
+                let type = row.getAttribute('data-type');
+                let duration = parseInt(row.getAttribute('data-duration')) || 0;
+                
+                if (type === 'study') currentStudy += duration;
+                if (type === 'break') currentBreak += duration;
+            });
+
+            // Re-render UI text blocks
+            document.getElementById('study-tracker').innerText = formatTime(currentStudy);
+            document.getElementById('break-tracker').innerText = formatTime(currentBreak);
+            
+            let percentComplete = Math.round((completedRows / TOTAL_ROWS) * 100);
+            document.getElementById('total-completion').innerText = percentComplete + "%";
+
+            // Update physical micro progress bars
+            document.getElementById('study-progress').style.width = Math.min((currentStudy / TARGET_STUDY) * 100, 100) + "%";
+            document.getElementById('break-progress').style.width = Math.min((currentBreak / TARGET_BREAK) * 100, 100) + "%";
+            document.getElementById('total-progress').style.width = percentComplete + "%";
+        }
+
+        function formatTime(minutes) {
+            const h = Math.floor(minutes / 60);
+            const m = minutes % 60;
+            if (h > 0) return `${h}h ${m}m`;
+            return `${m}m`;
+        }
+    </script>
+</body>
+</html>
