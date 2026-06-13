@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Grounded | Snap Back to Reality</title>
     
-    <!-- Importing Premium Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
@@ -186,6 +185,33 @@
             border: 2px dashed #fff;
         }
 
+        /* Action Button */
+        .action-section {
+            text-align: center;
+            padding: 2rem 0 6rem 0;
+        }
+
+        .btn-redirect {
+            display: inline-block;
+            padding: 1rem 3rem;
+            background: rgba(255, 255, 255, 0.02);
+            color: var(--text-color);
+            border: 1px solid var(--accent-border);
+            text-decoration: none;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.85rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+            cursor: pointer;
+        }
+
+        .btn-redirect:hover {
+            background: var(--text-color);
+            color: var(--bg-color);
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.15);
+        }
+
         /* Footer */
         footer {
             text-align: center;
@@ -210,7 +236,6 @@
 </head>
 <body>
 
-    <!-- Hero Section -->
     <section class="hero">
         <div class="container fade-element">
             <h1>Snap Back.</h1>
@@ -219,10 +244,8 @@
         <div class="scroll-indicator fade-element">Scroll to begin</div>
     </section>
 
-    <!-- Methods Section -->
     <section class="methods container">
         
-        <!-- Method 01: Ice Cube -->
         <div class="method-card fade-element">
             <div class="method-content">
                 <span class="method-number">01</span>
@@ -235,7 +258,6 @@
             </div>
         </div>
 
-        <!-- Method 02: Shower Reset -->
         <div class="method-card fade-element">
             <div class="method-content">
                 <span class="method-number">02</span>
@@ -248,7 +270,6 @@
             </div>
         </div>
 
-        <!-- Method 03: Physical Grounding -->
         <div class="method-card fade-element">
             <div class="method-content">
                 <span class="method-number">03</span>
@@ -263,11 +284,14 @@
 
     </section>
 
+    <section class="action-section container fade-element">
+        <a href="Additional%20BET.html" class="btn-redirect">Explore Additional Methods</a>
+    </section>
+
     <footer>
         <p>Designed for mental clarity. Breathe in, breathe out.</p>
     </footer>
 
-    <!-- JavaScript for Ambient Fade on Scroll -->
     <script>
         document.addEventListener("DOMContentLoaded", () => {
             const fadeElements = document.querySelectorAll('.fade-element');
