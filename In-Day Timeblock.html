@@ -198,8 +198,8 @@
 
         .time-row {
             display: grid;
-            grid-template-columns: 140px 1fr;
-            gap: 2rem;
+            grid-template-columns: 32px 140px 1fr;
+            gap: 1.5rem;
             padding: 2rem 0;
             border-bottom: 1px solid var(--subtle-line);
             align-items: baseline;
@@ -217,6 +217,23 @@
         }
 
         .time-row:hover::after { width: 100%; }
+
+        /* Circled Number */
+        .row-num {
+            font-family: 'Playfair Display', serif;
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: color 0.4s ease, border-color 0.4s ease;
+            align-self: flex-start;
+            margin-top: -0.2rem;
+        }
 
         .row-time {
             font-size: 0.95rem;
@@ -237,6 +254,12 @@
             transition: color 0.4s ease;
         }
 
+        .row-meta p strong {
+            color: #ffffff;
+            font-weight: 500;
+            transition: color 0.4s ease;
+        }
+
         /* Rest Block Indicator */
         .priority-rest {
             border-left: 2px solid rgba(255,255,255,0.3);
@@ -244,10 +267,39 @@
             margin-left: -1.5rem;
         }
 
+        /* --- Aesthetic Tree Structure for Subtopics --- */
+        .tree-item {
+            position: relative;
+            padding-left: 1.2rem;
+            margin-bottom: 0.35rem;
+            margin-left: 1.25rem; /* Push curve inward */
+            font-style: italic;
+            color: var(--muted-text);
+            display: block;
+            transition: color 0.4s ease;
+        }
+
+        .tree-item::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: -0.3rem;
+            width: 0.75rem;
+            height: 1.1rem;
+            border-left: 1px solid rgba(255, 255, 255, 0.2);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            border-bottom-left-radius: 5px; /* The curve */
+            transition: border-color 0.4s ease;
+        }
+
         /* Strikethrough Logic */
         .time-row.realized { border-bottom-color: transparent; }
+        .time-row.realized .row-num { color: #333; border-color: #333; }
         .time-row.realized .row-meta h2 { text-decoration: line-through; color: #444; }
         .time-row.realized .row-meta p { color: #333; }
+        .time-row.realized .row-meta p strong { color: #333; }
+        .time-row.realized .tree-item { color: #333; }
+        .time-row.realized .tree-item::before { border-color: #333; }
         .time-row.realized .row-time { color: #333; }
 
         /* --- System Message Box --- */
@@ -271,7 +323,10 @@
             .live-stats { grid-template-columns: 1fr; }
             .quota-grid { grid-template-columns: 1fr; }
             .quota-card.wide { grid-column: span 1; }
-            .time-row { grid-template-columns: 1fr; gap: 0.5rem; padding: 1.5rem 0; }
+            .time-row { grid-template-columns: 32px 1fr; gap: 1rem; padding: 1.5rem 0; }
+            .row-time { grid-column: 2; }
+            .row-meta { grid-column: 2; }
+            .row-num { grid-column: 1; grid-row: 1; margin-top: 0; }
             .priority-rest { padding-left: 1rem; margin-left: -1rem; }
             .system-message { padding: 1.5rem; }
         }
@@ -309,7 +364,7 @@
         </div>
 
         <div class="allocation-section load-fade delay-3">
-            <span class="allocation-label">Daily Assignment Goals</span>
+            <span class="allocation-label">DAILY ASSIGNMENT GOALS -ALIGNED WITH POMODORO-</span>
             <div class="quota-grid">
                 <div class="quota-card" onclick="toggleQuota(this)">
                     <h4>Maths-1 Hr</h4>
@@ -321,12 +376,13 @@
                     <h4>SST-30 Min's</h4>
                 </div>
                 <div class="quota-card" onclick="toggleQuota(this)">
-                    <h4>Selective subject 30 Min's</h4>
+                    <h4>Selective subject 30 Min's[Inc II-L}</h4>
                 </div>
                 <div class="quota-card wide" onclick="toggleQuota(this)">
-                    <h4>2-End Language 15 Min's</h4>
+                    <h4>2-End Language 15 Min's[SS]</h4>
                 </div>
             </div>
+            <span class="allocation-label" style="text-transform: none; margin-top: 1.5rem; display: block; font-style: italic;">(Homework is not study but integrated into study time)</span>
         </div>
     </section>
 
@@ -334,59 +390,105 @@
         <span class="allocation-label scroll-fade">Timeline (Click block to complete & update stats)</span>
         <div class="timeline-list">
 
-            <div class="time-row scroll-fade" data-type="study" data-duration="135" onclick="toggleRow(this)">
-                <div class="row-time">04:00 – 06:15 AM</div>
+            <div class="time-row scroll-fade" data-type="routine" data-duration="60" onclick="toggleRow(this)">
+                <div class="row-num">1</div>
+                <div class="row-time">05:00 – 06:00 AM</div>
                 <div class="row-meta">
-                    <h2>Morning Study Block</h2>
-                    <p><strong>[2 hours 15 mins]</strong> Handle the hardest tasks first. Complete your Science, Maths, and 2-End Language here while your mind is fresh.</p>
+                    <h2>Morning</h2>
+                    <p>
+                        <span class="tree-item">Bath(School Dress)</span>
+                        <span class="tree-item">Relax</span>
+                        <span style="display: block; margin-top: 0.75rem; color: #a0a0a0;"><strong>Prepare your mind and body</strong> for the day ahead. Transition smoothly out of sleep, <strong>find your grounding</strong>, and gear up cleanly.</span>
+                    </p>
                 </div>
             </div>
 
-            <div class="time-row scroll-fade" data-type="routine" data-duration="65" onclick="toggleRow(this)">
-                <div class="row-time">06:15 – 07:20 AM</div>
+            <div class="time-row scroll-fade" data-type="study" data-duration="75" onclick="toggleRow(this)">
+                <div class="row-num">2</div>
+                <div class="row-time">06:00 – 07:15 AM</div>
                 <div class="row-meta">
-                    <h2>Morning Routine & Commute</h2>
-                    <p>Get ready for the day. Eat a proper breakfast, pack your bag, and travel to school.</p>
+                    <h2>Tuition</h2>
+                    <p>
+                        <span class="tree-item">leave (~5mins early)</span>
+                        <span style="display: block; margin-top: 0.75rem; color: #a0a0a0;"><strong>Maximize early academic engagement.</strong> Stay sharp, <strong>lock in core focus</strong>, and preserve momentum during external instruction.</span>
+                    </p>
                 </div>
             </div>
 
-            <div class="time-row scroll-fade" data-type="routine" data-duration="520" onclick="toggleRow(this)">
-                <div class="row-time">07:20 – 04:00 PM</div>
+            <div class="time-row scroll-fade" data-type="routine" data-duration="15" onclick="toggleRow(this)">
+                <div class="row-num">3</div>
+                <div class="row-time">07:15 – 07:30 AM</div>
                 <div class="row-meta">
-                    <h2>School Day</h2>
-                    <p>Focus on learning directly from your teachers so you don't waste time re-learning material later.</p>
+                    <h2>Eat &amp; GearUp</h2>
+                    <p>
+                        <span class="tree-item">Food n accessories</span>
+                        <span style="display: block; margin-top: 0.75rem; color: #a0a0a0;">A quick buffer to <strong>vitalize your energy</strong>. Secure <strong>essential nutrition</strong> and organize your daily tools with zero friction.</span>
+                    </p>
+                </div>
+            </div>
+
+            <div class="time-row scroll-fade" data-type="routine" data-duration="540" onclick="toggleRow(this)">
+                <div class="row-num">4</div>
+                <div class="row-time">07:30 AM – 04:30 PM</div>
+                <div class="row-meta">
+                    <h2>School</h2>
+                    <p>
+                        <span class="tree-item">Transport (x2)</span>
+                        <span class="tree-item">Building</span>
+                        <span class="tree-item">T</span>
+                        <span style="display: block; margin-top: 0.75rem; color: #a0a0a0;"><strong>The baseline anchor</strong> of the day. Absorb direct institutional guidance effectively to <strong>dramatically cut down</strong> later review demands.</span>
+                    </p>
                 </div>
             </div>
 
             <div class="time-row priority-rest scroll-fade" data-type="break" data-duration="45" onclick="toggleRow(this)">
-                <div class="row-time">04:00 – 04:45 PM</div>
+                <div class="row-num">5</div>
+                <div class="row-time">04:30 – 05:15 PM</div>
                 <div class="row-meta">
-                    <h2>Post-School Break</h2>
-                    <p><strong>[45 mins]</strong> Relax. Eat a snack, step away from books, and stretch before the evening begins.</p>
+                    <h2>Rest</h2>
+                    <p>
+                        <span class="tree-item">Eat</span>
+                        <span class="tree-item">Rest</span>
+                        <span style="display: block; margin-top: 0.75rem; color: #a0a0a0;"><strong>Post-school cognitive offloading.</strong> Fully step away from intense mental processing, <strong>rehydrate, and recalibrate</strong> your stamina.</span>
+                    </p>
                 </div>
             </div>
 
-            <div class="time-row scroll-fade" data-type="study" data-duration="60" onclick="toggleRow(this)">
-                <div class="row-time">04:45 – 05:45 PM</div>
+            <div class="time-row scroll-fade" data-type="study" data-duration="180" onclick="toggleRow(this)">
+                <div class="row-num">6</div>
+                <div class="row-time">05:15 – 08:15 PM</div>
                 <div class="row-meta">
-                    <h2>Evening Study Block</h2>
-                    <p><strong>[1 hour]</strong> Complete SST and your Selective subject. Your assignments for the day are now 100% done.</p>
-                </div>
-            </div>
-
-            <div class="time-row scroll-fade" data-type="study" data-duration="145" onclick="toggleRow(this)">
-                <div class="row-time">05:45 – 08:10 PM</div>
-                <div class="row-meta">
-                    <h2>Tuition Classes</h2>
-                    <p><strong>[2 hours 25 mins]</strong> Attend your classes. Use this time to strengthen what you learned at school.</p>
+                    <h2>Study &amp; Academic's</h2>
+                    <p>
+                        <span class="tree-item">Self-Study(Pomodoro)</span>
+                        <span class="tree-item">Assignments</span>
+                        <span style="display: block; margin-top: 0.75rem; color: #a0a0a0;"><strong>Deep execution workflow.</strong> Run structured <strong>Pomodoro tracks</strong> to cleanly hammer through independent tasks and heavy revisions.</span>
+                    </p>
                 </div>
             </div>
 
             <div class="time-row priority-rest scroll-fade" data-type="break" data-duration="30" onclick="toggleRow(this)">
-                <div class="row-time">08:10 – 08:40 PM</div>
+                <div class="row-num">7</div>
+                <div class="row-time">08:15 – 08:45 PM</div>
                 <div class="row-meta">
-                    <h2>Wind Down & Prep</h2>
-                    <p><strong>[30 mins]</strong> No studying allowed. Eat dinner, set out clothes for 4:00 AM, and let your brain relax.</p>
+                    <h2>Eat &amp; Rest</h2>
+                    <p>
+                        <span class="tree-item">Eat</span>
+                        <span class="tree-item">Rest</span>
+                        <span class="tree-item">Self Butler</span>
+                        <span style="display: block; margin-top: 0.75rem; color: #a0a0a0;"><strong>Wind down completely.</strong> No systemic strain permitted—organize minor tasks, <strong>eat intentionally</strong>, and allow the mind to loosen up.</span>
+                    </p>
+                </div>
+            </div>
+
+            <div class="time-row scroll-fade" data-type="routine" data-duration="480" onclick="toggleRow(this)">
+                <div class="row-num">8</div>
+                <div class="row-time">09:00 PM – 05:00 AM</div>
+                <div class="row-meta">
+                    <h2>Sleep</h2>
+                    <p>
+                        <span style="display: block; color: #a0a0a0;"><strong>Critical structural recovery.</strong> Power down cognitive loops completely to lock in <strong>precise hormonal and mental restoration</strong> for tomorrow.</span>
+                    </p>
                 </div>
             </div>
 
@@ -400,9 +502,9 @@
     </div>
 
     <script>
-        const TARGET_STUDY = 135 + 60 + 145; 
+        const TARGET_STUDY = 75 + 180; 
         const TARGET_BREAK = 45 + 30; 
-        const TOTAL_ROWS = 7;
+        const TOTAL_ROWS = 8;
 
         document.addEventListener("DOMContentLoaded", () => {
             const observer = new IntersectionObserver((entries, obs) => {
