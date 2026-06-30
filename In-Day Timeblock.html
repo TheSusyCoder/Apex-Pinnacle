@@ -302,6 +302,32 @@
         .time-row.realized .tree-item::before { border-color: #333; }
         .time-row.realized .row-time { color: #333; }
 
+        /* Current Block Indicator */
+        .time-row.current {
+            background: rgba(255, 255, 255, 0.04);
+        }
+        .time-row.current .row-num {
+            color: #000;
+            background: #fff;
+            border-color: #fff;
+        }
+        .time-row.current::before {
+            content: 'NOW';
+            position: absolute;
+            top: 2rem;
+            right: 0;
+            font-size: 0.7rem;
+            letter-spacing: 0.15em;
+            color: var(--muted-text);
+        }
+
+        .live-clock {
+            font-variant-numeric: tabular-nums;
+            color: var(--muted-text);
+            font-size: 0.9rem;
+            margin-bottom: 0.75rem;
+        }
+
         /* --- System Message Box --- */
         .system-message {
             background: #050505;
@@ -336,6 +362,7 @@
 
     <section class="hero container">
         <div class="load-fade delay-1">
+            <p class="live-clock" id="live-clock"></p>
             <h1>Daily System<br><em>Execution.</em></h1>
         </div>
         
@@ -364,22 +391,22 @@
         </div>
 
         <div class="allocation-section load-fade delay-3">
-            <span class="allocation-label">DAILY ASSIGNMENT GOALS -ALIGNED WITH POMODORO-</span>
+            <span class="allocation-label">Daily Assignment Goals — Aligned with Pomodoro</span>
             <div class="quota-grid">
                 <div class="quota-card" onclick="toggleQuota(this)">
-                    <h4>Maths-1 Hr</h4>
+                    <h4>Maths — 1 Hr</h4>
                 </div>
                 <div class="quota-card" onclick="toggleQuota(this)">
-                    <h4>Science-1 Hr</h4>
+                    <h4>Science — 1 Hr</h4>
                 </div>
                 <div class="quota-card" onclick="toggleQuota(this)">
-                    <h4>SST-30 Min's</h4>
+                    <h4>SST — 30 Min</h4>
                 </div>
                 <div class="quota-card" onclick="toggleQuota(this)">
-                    <h4>Selective subject 30 Min's[Inc II-L}</h4>
+                    <h4>Elective Subject — 30 Min</h4>
                 </div>
                 <div class="quota-card wide" onclick="toggleQuota(this)">
-                    <h4>2-End Language 15 Min's[SS]</h4>
+                    <h4>Second Language — 15 Min</h4>
                 </div>
             </div>
             <span class="allocation-label" style="text-transform: none; margin-top: 1.5rem; display: block; font-style: italic;">(Homework is not study but integrated into study time)</span>
@@ -434,9 +461,8 @@
                     <h2>School</h2>
                     <p>
                         <span class="tree-item">Transport (x2)</span>
-                        <span class="tree-item">Building</span>
-                        <span class="tree-item">T</span>
-                        <span style="display: block; margin-top: 0.75rem; color: #a0a0a0;"><strong>The baseline anchor</strong> of the day. Absorb direct institutional guidance effectively to <strong>dramatically cut down</strong> later review demands.</span>
+                        <span class="tree-item">Classes</span>
+                        <span style="display: block; margin-top: 0.75rem; color: #a0a0a0;"><strong>The baseline anchor</strong> of the day. Absorb direct instruction effectively to <strong>cut down review time</strong> later.</span>
                     </p>
                 </div>
             </div>
@@ -497,7 +523,7 @@
 
     <div class="container scroll-fade">
         <div class="system-message">
-            <p><strong>Systems build success.</strong> Every completed block is a vote for the student you are becoming. The math works perfectly—you have enough time to finish your work, attend classes, and get exactly 7 hours of rest. Trust the system, stick to the timings, and you will secure your 10th-grade goals without burning out.</p>
+            <p><strong>Systems build success.</strong> Every completed block is a vote for the student you're becoming. The math works: you have enough time to finish your work, attend classes, and get a full 7 hours of rest. Trust the system, stick to the timings, and you'll hit your 10th-grade goals without burning out.</p>
         </div>
     </div>
 
@@ -505,6 +531,19 @@
         const TARGET_STUDY = 75 + 180; 
         const TARGET_BREAK = 45 + 30; 
         const TOTAL_ROWS = 8;
+        const STORAGE_KEY = 'timeblock-progress';
+
+        // Each row's start/end time in minutes-from-midnight, for "current block" + persistence keying
+        const rowSchedule = [
+            { start: 5*60,        end: 6*60 },
+            { start: 6*60,        end: 7*60+15 },
+            { start: 7*60+15,     end: 7*60+30 },
+            { start: 7*60+30,     end: 16*60+30 },
+            { start: 16*60+30,    end: 17*60+15 },
+            { start: 17*60+15,    end: 20*60+15 },
+            { start: 20*60+15,    end: 20*60+45 },
+            { start: 21*60,       end: 24*60+5*60 } // sleep wraps past midnight
+        ];
 
         document.addEventListener("DOMContentLoaded", () => {
             const observer = new IntersectionObserver((entries, obs) => {
@@ -520,15 +559,72 @@
             });
 
             document.querySelectorAll('.scroll-fade').forEach(el => observer.observe(el));
+
+            loadProgress();
+            calculateLiveStats();
+            updateClockAndCurrentBlock();
+            setInterval(updateClockAndCurrentBlock, 30000);
         });
+
+        function todayKey() {
+            const d = new Date();
+            return `${d.getFullYear()}-${d.getMonth()+1}-${d.getDate()}`;
+        }
+
+        function loadProgress() {
+            try {
+                const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+                if (saved.date !== todayKey()) return; // fresh day, fresh checklist
+                const rows = document.querySelectorAll('.time-row');
+                (saved.completedRows || []).forEach(i => rows[i] && rows[i].classList.add('realized'));
+                const cards = document.querySelectorAll('.quota-card');
+                (saved.completedQuotas || []).forEach(i => cards[i] && cards[i].classList.add('secured'));
+            } catch (e) { /* ignore corrupt storage */ }
+        }
+
+        function saveProgress() {
+            const rows = Array.from(document.querySelectorAll('.time-row'));
+            const cards = Array.from(document.querySelectorAll('.quota-card'));
+            const data = {
+                date: todayKey(),
+                completedRows: rows.map((r, i) => r.classList.contains('realized') ? i : -1).filter(i => i >= 0),
+                completedQuotas: cards.map((c, i) => c.classList.contains('secured') ? i : -1).filter(i => i >= 0)
+            };
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+        }
+
+        function updateClockAndCurrentBlock() {
+            const now = new Date();
+            const clockEl = document.getElementById('live-clock');
+            if (clockEl) {
+                clockEl.textContent = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+            }
+            const minutesNow = now.getHours() * 60 + now.getMinutes();
+            const rows = document.querySelectorAll('.time-row');
+            rows.forEach((row, i) => {
+                const sched = rowSchedule[i];
+                let isCurrent = false;
+                if (sched) {
+                    if (sched.end > 24*60) {
+                        // wraps past midnight (sleep block)
+                        isCurrent = minutesNow >= sched.start || minutesNow < (sched.end - 24*60);
+                    } else {
+                        isCurrent = minutesNow >= sched.start && minutesNow < sched.end;
+                    }
+                }
+                row.classList.toggle('current', isCurrent);
+            });
+        }
 
         function toggleRow(row) {
             row.classList.toggle('realized');
             calculateLiveStats();
+            saveProgress();
         }
 
         function toggleQuota(card) {
             card.classList.toggle('secured');
+            saveProgress();
         }
 
         function calculateLiveStats() {
